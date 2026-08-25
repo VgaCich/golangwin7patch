@@ -1,4 +1,3 @@
-
 # Golang fixer for Windows 7
 
 ## What's the point?
@@ -51,7 +50,7 @@ Yes. If you prefer not to revert the aforementioned patch and rebuild every Go
 program for Windows 7 from source yourself, or you're just an user and want
 to fix your Syncthing or Torrserver, proceed.
 
-Just [download it from Releases](https://github.com/stunndard/golangwin7patch/releases)
+Just [download it from Releases](https://github.com/vgacich/golangwin7patch/releases)
 and run it on your Windows 7 system to patch the necessary .EXE files.
 Or build it yourself, using the free
 [Delphi 11 Community Edition](https://www.embarcadero.com/products/delphi/starter).
@@ -105,4 +104,3 @@ This action leaves Windows 7 users completely unable to benefit from
 software compiled with the newer Go versions, (who said security updates, no security for you!)
 with issues closed due to [being an unsupported platform](https://github.com/golang/go/issues/64622),
 among other less accommodating practices.
-

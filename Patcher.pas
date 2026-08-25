@@ -2,8 +2,10 @@ unit Patcher;
 
 interface
 
+{$R GoWin7FixerResource.RES}
+
 uses
-  WinApi.Windows, System.SysUtils, System.Classes, System.Hash;
+  Windows, SysUtils, Classes, SHA1Hash;
 
 function Patch(fileName: string): boolean;
 function DropDLLs: boolean;
@@ -33,7 +35,7 @@ begin
   begin
     if CompareMem(pattern, @buf[i], patternlen) then
     begin
-      Log.Add('patching at: 0x' + i.ToHexString(8));
+      Log.Add('patching at: 0x' + IntToHex(i, 8));
       buf[i] := 'a';
       Result := True;
     end;
@@ -50,7 +52,7 @@ begin
   try
     if FileExists(fileName) then
     begin
-      if THashMD5.GetHashString(rs) = THashMD5.GetHashStringFromFile(fileName) then
+      if SHA1Stream(rs) = SHA1File(fileName) then
       begin
         Log.Add(fileName + ' is correct version, no change required.');
         Result := True;
@@ -60,9 +62,9 @@ begin
       if not DeleteFile(fileName) then
       begin
         Log.Add('file ' + fileName + ' cannot be deleted, probably in use, trying to rename...');
-        if not RenameFile(fileName, fileName.Substring(0, fileName.Length - 1) + '_') then
+        if not RenameFile(fileName, Copy(fileName, 0, Length(fileName) - 1) + '_') then
         begin
-          Log.Add('cannot rename it to ' + fileName.Substring(0, fileName.Length - 1) + '. check if it''s opened my another program.');
+          Log.Add('cannot rename it to ' + Copy(fileName, 0, Length(fileName) - 1) + '_' + '. check if it''s opened my another program.');
           exit;
         end;
       end;
@@ -77,7 +79,7 @@ begin
       Log.Add('cannot create file for writing: ' + fileName);
       exit;
     end;
-    fs.CopyFrom(rs);
+    fs.CopyFrom(rs, rs.Size);
     fs.Free;
     Log.Add('file written ok: ' + fileName);
 
@@ -89,19 +91,19 @@ end;
 
 function CheckOSVersion: boolean;
 var
-  OSVersionInfoEx: TOSVersionInfoEx;
+  OSVersionInfo: TOSVersionInfo;
 begin
   Result := False;
   Log.Clear;
-  OSVersionInfoEx.dwOSVersionInfoSize := sizeof(TOSVersionInfo);
-  if not GetVersionEx(OSVersionInfoEx) then
+  OSVersionInfo.dwOSVersionInfoSize := sizeof(TOSVersionInfo);
+  if not GetVersionEx(OSVersionInfo) then
   begin
     Log.Add('cannot get OS version.');
     exit;
   end;
 
-  if (OSVersionInfoEx.dwMajorVersion <> 6) and
-    (OSVersionInfoEx.dwMinorVersion <> 1)  then
+  if (OSVersionInfo.dwMajorVersion <> 6) and
+    (OSVersionInfo.dwMinorVersion <> 1)  then
   begin
     Log.Add('current OS is not Windows 7 or Server 2008.');
     Log.Add('run this patcher on the actual Windows system you want to patch.');
@@ -166,12 +168,13 @@ begin
   end;
 
   ms := TMemoryStream.Create;
-  ms.CopyFrom(fs);
+  fs.Seek(0, soFromBeginning);
+  ms.CopyFrom(fs, fs.Size);
   ms.Seek(0, soFromBeginning);
 
   try
     c1 := 'bcryptprimitives.dll';
-    c2 := @string(c1)[1];
+    c2 := @widestring(c1)[1];
     if not(PatchMem(c1, buf, Length(c1), fs.Size) and PatchMem(c2, buf,
       Length(c1) * 2, fs.Size)) then
     begin
@@ -193,7 +196,8 @@ begin
       Log.Add('couldn''t save backup file ' + fileName + '.bak');
       exit;
     end;
-    bs.CopyFrom(ms);
+    ms.Seek(0, soFromBeginning);
+    bs.CopyFrom(ms, ms.Size);
     bs.Free;
     Log.Add('backup saved ok.');
   finally

@@ -3,10 +3,8 @@ unit Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
-  ShellApi, Vcl.ExtCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, JPEG, ShellApi, ExtCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -40,6 +38,9 @@ var
 
 function ChangeWindowMessageFilterEx(HWND: integer; Msg: Cardinal;
   Action: Dword; pChangeFilterStruct: pointer): BOOL; stdcall; external 'user32.dll';
+
+const
+  WM_COPYGLOBALDATA = $0049;
 
 procedure TfrmMain.cmdOpenClick(Sender: TObject);
 begin

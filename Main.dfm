@@ -12,8 +12,10 @@ object frmMain: TfrmMain
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  PixelsPerInch = 96
   TextHeight = 15
   object imgPic: TImage
     Left = 8
