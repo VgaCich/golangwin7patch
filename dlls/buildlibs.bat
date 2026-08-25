@@ -1,7 +1,7 @@
 @echo off
 ::Set up your compilers here
-set tcc32=c:\Distr\tcc-busybox-32/tcc/tcc.exe
-set tcc64=c:\Distr\tcc-busybox-64/tcc/tcc.exe
+set tcc32=c:\Distr\tcc-busybox-32\tcc\tcc.exe
+set tcc64=c:\Distr\tcc-busybox-64\tcc\tcc.exe
 
 echo Building 32-bit
 %tcc32% -shared acryptprimitives.c -o acryptprimitives32.dll
