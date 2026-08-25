@@ -52,8 +52,7 @@ to fix your Syncthing or Torrserver, proceed.
 
 Just [download it from Releases](https://github.com/vgacich/golangwin7patch/releases)
 and run it on your Windows 7 system to patch the necessary .EXE files.
-Or build it yourself, using the free
-[Delphi 11 Community Edition](https://www.embarcadero.com/products/delphi/starter).
+Or build it yourself, using the Delphi 7 and TCC.
 
 This patcher is applicable to all Windows Go executables, regardless of whether you have
 access to their source, and supports both 32-bit and 64-bit .EXEs.
